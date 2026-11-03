@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр ЕГЭ — Тип Членистоногие</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#172033;--muted:#65718a;--blue:#315ee8;--blue2:#eaf0ff;--line:#dce3ef;--green:#16834b;--red:#c43d45}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(120deg,#172c67,#315ee8);color:white;padding:34px 18px}
+.wrap{max-width:940px;margin:auto;padding:0 16px}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.15;margin:0 0 10px}
+header p{margin:0;color:#e1e8ff;max-width:720px}
+.meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.pill{border:1px solid #ffffff55;border-radius:30px;padding:5px 12px;font-size:13px}
+main{padding:24px 0 60px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.progressbox{background:white;border:1px solid var(--line);border-radius:12px;padding:12px 15px;flex:1;min-width:220px}
+.progressline{height:8px;background:#e8edf7;border-radius:9px;overflow:hidden;margin-top:8px}.progressline span{display:block;height:100%;width:0;background:var(--blue);transition:width .2s}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 17px;font-weight:650}
+.primary{background:var(--blue);color:white}.secondary{background:#e9eef8;color:#23304b}.quiet{background:transparent;color:var(--blue);padding:7px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:21px;margin:14px 0;box-shadow:0 3px 12px #1b31500a}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+.qnum{font-weight:750;color:var(--blue)}.qtype{font-size:12px;color:var(--muted);background:#f0f3f9;padding:4px 9px;border-radius:20px}
+.question{font-size:18px;font-weight:650;margin:8px 0 16px}
+.option{display:flex;gap:11px;align-items:flex-start;padding:11px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;cursor:pointer}
+.option:hover{border-color:#9aadee;background:#fafbff}.option input{margin-top:4px;accent-color:var(--blue);transform:scale(1.08)}
+.option span{flex:1}.option.correct{border-color:#80c69e;background:#effaf3}.option.wrong{border-color:#e5a0a4;background:#fff3f3}
+input[type=text]{width:100%;max-width:360px;border:1px solid #cbd5e4;border-radius:9px;padding:11px;font:inherit}
+.hint{margin-top:12px}.hint summary{color:var(--blue);cursor:pointer;font-weight:600}.hint p{color:var(--muted);margin:7px 0 0}
+.feedback{display:none;border-radius:10px;padding:12px 14px;margin-top:13px;font-size:14px}.feedback.show{display:block}.feedback.good{background:#effaf3;color:#155d37}.feedback.bad{background:#fff1f1;color:#8d2930}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.result{display:none;background:white;border:1px solid var(--line);border-radius:16px;padding:24px;margin-top:22px}.result.show{display:block}.score{font-size:36px;font-weight:800;color:var(--blue)}
+.small{font-size:13px;color:var(--muted)}.result h2{margin-top:0}.review-item{padding:12px 0;border-top:1px solid var(--line)}.review-item strong{display:block}.taggood{color:var(--green)}.tagbad{color:var(--red)}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:20px}
+@media(max-width:600px){.card{padding:16px}.question{font-size:16px}.toolbar{align-items:stretch}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>ЕГЭ по биологии: тип Членистоногие</h1>
+<p>Тренировочный вариант в формате экзамена. Реши задания, проверь ответы и изучи пояснения к ошибкам.</p>
+<div class="meta"><span class="pill">24 задания</span><span class="pill">Задания № 1–21, 24–26</span><span class="pill">Автоматическая проверка</span></div>
+</div></header>
+<main class="wrap">
+<div class="toolbar">
+ <div class="progressbox"><div><b id="done">0</b> из 24 заданий отвечено <span class="small" id="percent">· 0%</span></div><div class="progressline"><span id="bar"></span></div></div>
+ <button class="secondary" onclick="resetQuiz()">Начать заново</button>
+</div>
+<div id="quiz"></div>
+<div class="actions"><button class="primary" onclick="checkQuiz()">Завершить и проверить</button><button class="secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">К началу</button></div>
+<section class="result" id="result" aria-live="polite"></section>
+</main>
+<footer>Тренажёр для самостоятельной подготовки. Это авторский тренировочный вариант, а не официальный КИМ ФИПИ.</footer>
+<script>
+const questions = [
+{n:1,t:"Один ответ",q:"Какой признак является общим для всех представителей типа Членистоногие?",o:["Членистые конечности","Две пары усиков","Три пары ходильных ног","Наличие крыльев"],a:[0],e:"Общий признак членистоногих — членистые конечности и наружный скелет. Усики, три пары ног и крылья есть не у всех представителей."},
+{n:2,t:"Один ответ",q:"Какое вещество входит в состав наружного скелета членистоногих?",o:["Целлюлоза","Хитин","Крахмал","Гликоген"],a:[1],e:"Основу наружной кутикулы членистоногих составляет хитин; у многих форм в ней также присутствуют белки и минеральные вещества."},
+{n:3,t:"Один ответ",q:"Сколько пар ходильных ног у речного рака?",o:["Три","Четыре","Пять","Шесть"],a:[2],e:"Речной рак относится к десятиногим ракообразным: у него пять пар ходильных ног. Первая пара обычно несёт клешни."},
+{n:4,t:"Несколько ответов",q:"Выберите три признака, характерные для насекомых.",o:["Тело состоит из головы, груди и брюшка","Четыре пары ходильных ног","Три пары ходильных ног","Одна пара усиков"],a:[0,2,3],e:"У насекомых тело разделено на голову, грудь и брюшко; имеется три пары ног и одна пара усиков."},
+{n:5,t:"Один ответ",q:"Какие органы дыхания характерны для большинства насекомых?",o:["Жабры","Лёгкие альвеолярного типа","Трахеи","Кожа с капиллярами"],a:[2],e:"У большинства насекомых дыхательная система представлена трахеями, которые открываются наружу дыхальцами."},
+{n:6,t:"Один ответ",q:"Какие органы выделения имеются у речного рака?",o:["Мальпигиевы сосуды","Зелёные железы","Почки","Метанефридии"],a:[1],e:"У речного рака органы выделения — парные зелёные (антеннальные) железы, расположенные в головном отделе."},
+{n:7,t:"Верно или неверно",q:"У взрослых пауков имеется четыре пары ходильных ног.",o:["Верно","Неверно"],a:[0],e:"У взрослых паукообразных, в том числе пауков, обычно четыре пары ходильных ног."},
+{n:8,t:"Один ответ",q:"Какой представитель членистоногих имеет три пары ходильных ног и две пары крыльев?",o:["Паук-крестовик","Речной рак","Майский жук","Клещ"],a:[2],e:"Майский жук — насекомое: у него три пары ног, передние крылья превращены в надкрылья, задние служат для полёта."},
+{n:9,t:"Один ответ",q:"Как называется периодическая смена наружного скелета у членистоногих?",o:["Линька","Регенерация","Оплодотворение","Метаморфоз"],a:[0],e:"Во время линьки членистоногое сбрасывает старую кутикулу. После этого тело может увеличиваться в размерах до затвердевания нового покрова."},
+{n:10,t:"Один ответ",q:"Какой тип кровеносной системы характерен для членистоногих?",o:["Замкнутая","Незамкнутая","Кровеносная система отсутствует","Два круга кровообращения"],a:[1],e:"Кровеносная система членистоногих незамкнутая: гемолимфа из сосудов поступает в полости и омывает органы."},
+{n:11,t:"Один ответ",q:"Какое насекомое развивается с полным превращением?",o:["Саранча","Таракан","Бабочка","Клоп"],a:[2],e:"Бабочка проходит стадии яйца, личинки (гусеницы), куколки и имаго. Это полное превращение."},
+{n:12,t:"Несколько ответов",q:"Выберите представителей класса Паукообразные.",o:["Скорпион","Краб","Клещ","Муха"],a:[0,2],e:"Скорпионы и клещи относятся к паукообразным. Краб — ракообразное, муха — насекомое."},
+{n:13,t:"Один ответ",q:"Какой отдел тела насекомого несёт три пары ходильных ног?",o:["Голова","Грудь","Брюшко","Головогрудь"],a:[1],e:"Три пары ног и, у крылатых форм, крылья прикреплены к грудному отделу."},
+{n:14,t:"Соответствие",q:"Установите соответствие между представителем и классом членистоногих.",pairs:[["Речной рак","Ракообразные"],["Паук-крестовик","Паукообразные"],["Майский жук","Насекомые"],["Краб","Ракообразные"]],o:["А — Ракообразные; Б — Паукообразные; В — Насекомые","А — Паукообразные; Б — Насекомые; В — Ракообразные","А — Насекомые; Б — Ракообразные; В — Паукообразные","А — Ракообразные; Б — Насекомые; В — Паукообразные"],a:[0],e:"Речной рак и краб — ракообразные; паук-крестовик — паукообразное; майский жук — насекомое."},
+{n:15,t:"Один ответ",q:"Какая стадия отсутствует при развитии насекомых с неполным превращением?",o:["Яйцо","Личинка","Куколка","Взрослое насекомое"],a:[2],e:"При неполном превращении развитие идёт через яйцо, личинку (нимфу) и взрослое насекомое; стадии куколки нет."},
+{n:16,t:"Верно или неверно",q:"У ракообразных органы дыхания у большинства представителей — жабры.",o:["Верно","Неверно"],a:[0],e:"У большинства ракообразных газообмен происходит с помощью жабр. У некоторых мелких форм возможен газообмен через поверхность тела."},
+{n:17,t:"Несколько ответов",q:"Какие особенности характерны для паукообразных?",o:["Четыре пары ходильных ног у взрослых особей","Одна пара усиков","Отсутствие усиков","Тело часто разделено на головогрудь и брюшко"],a:[0,2,3],e:"Для паукообразных характерны четыре пары ног, отсутствие усиков; у многих тело состоит из головогруди и брюшка."},
+{n:18,t:"Один ответ",q:"Как называется жидкость, циркулирующая в незамкнутой кровеносной системе членистоногих?",o:["Плазма","Лимфа","Гемолимфа","Тканевая жидкость"],a:[2],e:"Жидкость незамкнутой кровеносной системы членистоногих называется гемолимфой."},
+{n:19,t:"Один ответ",q:"Какой орган чувств у многих насекомых воспринимает запахи?",o:["Усики","Жало","Клешни","Надкрылья"],a:[0],e:"На усиках насекомых расположено множество чувствительных рецепторов, в том числе обонятельных."},
+{n:20,t:"Верно или неверно",q:"У речного рака две пары усиков.",o:["Верно","Неверно"],a:[0],e:"У ракообразных обычно две пары усиков: короткие антеннулы и длинные антенны."},
+{n:21,t:"Один ответ",q:"Какой представитель членистоногих является переносчиком возбудителя малярии человеку?",o:["Иксодовый клещ","Самка комара рода Anopheles","Комнатная муха","Медоносная пчела"],a:[1],e:"Малярийные плазмодии передаются человеку при укусе инфицированной самки комара рода Anopheles."},
+{n:24,t:"Несколько ответов",q:"Какие из перечисленных животных относятся к типу Членистоногие?",o:["Речной рак","Дождевой червь","Клещ","Майский жук"],a:[0,2,3],e:"Речной рак, клещ и майский жук — членистоногие. Дождевой червь относится к кольчатым червям."},
+{n:25,t:"Последовательность",q:"Расположите стадии развития бабочки в правильной последовательности, начиная с самой ранней.",o:["Куколка","Яйцо","Взрослая бабочка","Личинка (гусеница)"],a:[1,3,0,2],e:"Правильная последовательность: яйцо → личинка (гусеница) → куколка → взрослая бабочка."},
+{n:26,t:"Один ответ",q:"Установите, какое утверждение о наружном скелете членистоногих верно.",o:["Он растёт вместе с телом непрерывно","Он ограничивает рост, поэтому животное периодически линяет","Он образован только костной тканью","Он отсутствует у водных членистоногих"],a:[1],e:"Твёрдая кутикула не растёт непрерывно вместе с телом. Поэтому для увеличения размеров членистоногие периодически линяют."}
+];
+
+const root=document.getElementById('quiz');
+function render(){
+ root.innerHTML=questions.map((q,i)=>{
+  let controls='';
+  if(q.pairs){
+   controls='<div class="small">Определите классы: А — речной рак, Б — паук-крестовик, В — майский жук. Выберите правильный вариант.</div>';
+   controls+=q.o.map((x,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"><span>${x}</span></label>`).join('');
+  }else if(q.n===25){
+   controls='<p class="small">Перетащить здесь нельзя — введите номера элементов через запятую в правильном порядке (например: 2, 1, 3, 4).</p><input type="text" id="ans'+i+'" placeholder="Номера элементов через запятую"><div class="small">Элементы: 1 — куколка; 2 — яйцо; 3 — взрослая бабочка; 4 — гусеница.</div>';
+  }else{
+   controls=q.o.map((x,j)=>`<label class="option"><input type="${q.a.length>1?'checkbox':'radio'}" name="q${i}" value="${j}"><span>${x}</span></label>`).join('');
+  }
+  return `<article class="card" id="card${i}"><div class="qhead"><span class="qnum">Задание ${q.n}</span><span class="qtype">${q.t}</span></div><div class="question">${q.q}</div>${controls}<details class="hint"><summary>Подсказка</summary><p>${q.n===25?'Вспомни полный цикл превращения с последовательными стадиями.':q.n===14?'Сопоставь строение и известные систематические группы.':q.e.split('.')[0]+'.'}</p></details><div class="feedback" id="fb${i}"></div></article>`;
+ }).join('');
+ root.querySelectorAll('input').forEach(el=>el.addEventListener('change',updateProgress));
+ updateProgress();
+}
+function selected(i){
+ const q=questions[i];
+ if(q.n===25){
+  const s=document.getElementById('ans'+i).value.trim();
+  if(!s)return [];
+  return s.split(/[,\s;]+/).filter(Boolean).map(x=>Number(x)-1);
+ }
+ return [...document.querySelectorAll(`input[name="q${i}"]:checked`)].map(x=>Number(x.value));
+}
+function updateProgress(){
+ let count=0;
+ questions.forEach((q,i)=>{if(selected(i).length)count++});
+ document.getElementById('done').textContent=count;
+ document.getElementById('percent').textContent='· '+Math.round(count/questions.length*100)+'%';
+ document.getElementById('bar').style.width=(count/questions.length*100)+'%';
+}
+function checkQuiz(){
+ let score=0,answered=0,review='';
+ questions.forEach((q,i)=>{
+  const got=selected(i), correct=q.a;
+  const ok=got.length===correct.length && got.every(v=>correct.includes(v));
+  if(got.length)answered++;
+  if(ok)score++;
+  const fb=document.getElementById('fb'+i);
+  fb.className='feedback show '+(ok?'good':'bad');
+  fb.innerHTML=`<b>${ok?'Верно':'Нужно повторить'}.</b> ${q.e}`;
+  document.querySelectorAll(`#card${i} .option`).forEach((lab,j)=>{
+   const inp=lab.querySelector('input');
+   if(correct.includes(j))lab.classList.add('correct');
+   else if(inp.checked)lab.classList.add('wrong');
+  });
+  review+=`<div class="review-item"><strong class="${ok?'taggood':'tagbad'}">Задание ${q.n}: ${ok?'верно':'ошибка'}</strong><span>${q.e}</span></div>`;
+ });
+ const result=document.getElementById('result');
+ result.className='result show';
+ result.innerHTML=`<h2>Результат</h2><div class="score">${score} / ${questions.length}</div><p>Отвечено: ${answered} из ${questions.length}. За каждое задание в этом тренажёре начисляется 1 балл.</p><p><b>${score>=21?'Отличная работа!':score>=16?'Хороший результат!':score>=10?'Есть хорошая база, но стоит повторить тему.':'Рекомендуем повторить основные признаки классов членистоногих.'}</b></p><h3>Разбор заданий</h3>${review}<button class="primary" onclick="resetQuiz()">Пройти ещё раз</button>`;
+ result.scrollIntoView({behavior:'smooth'});
+}
+function resetQuiz(){
+ render();document.getElementById('result').className='result';window.scrollTo({top:0,behavior:'smooth'});
+}
+render();
+</script>
+</body>
+</html>
